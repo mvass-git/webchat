@@ -1,5 +1,8 @@
 import socket
 import threading
+
+import json
+
 HOST, PORT = "0.0.0.0", 8005
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind((HOST, PORT))
@@ -9,8 +12,24 @@ print("[SERVER STARTED]")
 def client_handler(client_socket, address):
     while True:
         got_msg = client_socket.recv(1024).decode()
+
+        if not got_msg:
+            break
+        
         client_socket.sendall(f"Server got: {got_msg}".encode())
-        broadcast(client_socket, got_msg)
+
+        dmsg = json.loads(got_msg)
+
+        if dmsg.get("type") == "send_chat_msg":
+            if dmsg.get("msg"):
+                respond = {
+                    "type":"chat_msg",
+                    "msg":dmsg.get("msg")
+                }
+
+                broadcast(client_socket, json.dumps(respond))
+
+
 def broadcast(sender, msg):
     for cl in clients:
         if cl!= sender: 

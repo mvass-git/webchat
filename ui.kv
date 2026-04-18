@@ -3,12 +3,17 @@
         size_hint: (0.8,0.8)
         pos_hint: {"x":0.1, "top":0.05}
         BoxLayout:
+            id: box_messages
             orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
         
     TextInput:
+        id: text_field
         size_hint: (0.68, 0.1)
         pos_hint: {"x":0.01,"y":0}
     Button:
         size_hint: (0.38, 0.1)
         pos_hint: {"x":0.69,"y":0}
+        on_press: root.send_chat_msg()
         
