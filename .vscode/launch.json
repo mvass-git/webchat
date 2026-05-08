@@ -1,0 +1,36 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Server",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/server.py"
+    },
+    {
+      "name": "Client 1",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/client.py",
+      "args": ["1"]
+    },
+    {
+      "name": "Client 2",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/client.py",
+      "args": ["2"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Server + Clients",
+      "configurations": [
+        "Server",
+        "Client 1",
+        "Client 2"
+      ],
+      "stopAll": true
+    }
+  ]
+}
