@@ -10,9 +10,12 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.lang import Builder
 from kivy.clock import Clock
 
+from kivy.graphics import Color, Rectangle
+
 import socket
 import threading
 import json
+import traceback
 
 class Connector:
     HOST, PORT = "127.0.0.1", 8005
@@ -36,10 +39,11 @@ class Connector:
                     break
 
                 msg = package.decode()
+                print(f'[RECEIVED] {msg}')
                 self.respond_handler(json.loads(msg))
                 print(msg)
             except Exception as e:
-                print(f"[ERROR] {e}")
+                print(f"[ERROR] {traceback.format_exc()}")
                 break
     
     def send_msg(self, msg:dict):
@@ -63,17 +67,21 @@ class ChatScreen(Screen):
             "msg":t
         }
         self.conn.send_msg(msg)
+
+        self.show_msg(t)
     
     def show_msg(self, text):
         self.ids.box_messages.add_widget(
-            Label(text=text)
+            Label(text=text, color=(1,1,1,1),size_hint_y=None, height=40)
         )
+        for ch in self.ids.box_messages.children:
+            print(ch.pos)
 
 class ChatApp(App):
 
     def __init__(self):
         super().__init__()
-        self.conn = Connector()
+        self.conn = Connector(self.msg_handler)
 
     def build(self):
         sm = ScreenManager()
@@ -86,7 +94,7 @@ class ChatApp(App):
         if msg.get("type") == "chat_msg":
             if msg.get("msg"):
                 t = msg.get("msg")
-                self.chat.show_msg(t)
+                Clock.schedule_once( lambda dt: self.chat.show_msg(t))
 
 ChatApp().run()
 

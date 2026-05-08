@@ -16,7 +16,7 @@ def client_handler(client_socket, address):
         if not got_msg:
             break
         
-        client_socket.sendall(f"Server got: {got_msg}".encode())
+        #client_socket.sendall(f"Server got: {got_msg}".encode())
 
         dmsg = json.loads(got_msg)
 
@@ -33,7 +33,7 @@ def client_handler(client_socket, address):
 def broadcast(sender, msg):
     for cl in clients:
         if cl!= sender: 
-            cl.sandall(msg.encode())
+            cl.sendall(msg.encode())
 while True:
     client_socket, address = sock.accept()
     clients.append(client_socket)
